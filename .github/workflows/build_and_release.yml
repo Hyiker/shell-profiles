@@ -1,0 +1,32 @@
+name: pack and release the scripts
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  compile-and-release:
+    name: Build and release the profiles
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull source
+        uses: actions/checkout@v3
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ steps.vars.outputs.sha_short }}
+          message: "Commit hash: ${{ steps.vars.outputs.sha_short }}"
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Compile
+        run: python config.py --ps profile.ps1 --bash .profile
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.vars.outputs.sha_short }}
+          files: |
+            profile.ps1
+            .profile
