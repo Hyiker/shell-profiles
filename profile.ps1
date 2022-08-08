@@ -1,7 +1,8 @@
 Set-Alias -Name code -Value "code-insiders";
 Set-Alias -Name p -Value "python";
 Set-Alias -Name p3 -Value "python3";
-Set-Alias -Name f -Value "ffmpeg";
+Set-Alias -Name ff -Value "ffmpeg";
+Set-Alias -Name youtube-dl -Value "yt-dlp";
 $env:HTTP_PROXY="http://127.0.0.1:7890";
 $env:HTTPS_PROXY="http://127.0.0.1:7890";
 $env:ALL_PROXY="http://127.0.0.1:7890";
