@@ -8,6 +8,8 @@ cc.append(AliasCommand('p', 'python'))
 cc.append(AliasCommand('p3', 'python3'))
 cc.append(AliasCommand('ff', 'ffmpeg'))
 cc.append(AliasCommand('youtube-dl', 'yt-dlp'))
+cc.append(AliasCommand('vim', 'nvim'))
+cc.append(AliasCommand('vi', 'nvim'))
 
 cc.append(EVCommand('HTTP_PROXY', 'http://127.0.0.1:7890'))
 cc.append(EVCommand('HTTPS_PROXY', 'http://127.0.0.1:7890'))
