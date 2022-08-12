@@ -3,25 +3,26 @@ import argparse
 
 cc = CommandCollection()
 
-cc.append(AliasCommand('code', 'code-insiders'))
-cc.append(AliasCommand('p', 'python'))
-cc.append(AliasCommand('p3', 'python3'))
-cc.append(AliasCommand('ff', 'ffmpeg'))
-cc.append(AliasCommand('youtube-dl', 'yt-dlp'))
-cc.append(AliasCommand('vim', 'nvim'))
-cc.append(AliasCommand('vi', 'nvim'))
+cc.add_alias('code', 'code-insiders')
+cc.add_alias('p', 'python')
+cc.add_alias('p3', 'python3')
+cc.add_alias('ff', 'ffmpeg')
+cc.add_alias('youtube-dl', 'yt-dlp')
+cc.add_alias('vim', 'nvim')
+cc.add_alias('vi', 'nvim')
+cc.add_alias('which', 'get-command', plats=[TargetPlat.POWERSHELL])
 
-cc.append(EVCommand('HTTP_PROXY', 'http://127.0.0.1:7890'))
-cc.append(EVCommand('HTTPS_PROXY', 'http://127.0.0.1:7890'))
-cc.append(EVCommand('ALL_PROXY', 'http://127.0.0.1:7890'))
-cc.append(EVCommand('http_proxy', 'http://127.0.0.1:7890'))
-cc.append(EVCommand('https_proxy', 'http://127.0.0.1:7890'))
-cc.append(EVCommand('all_proxy', 'http://127.0.0.1:7890'))
+cc.add_ev('HTTP_PROXY', 'http://127.0.0.1:7890')
+cc.add_ev('HTTPS_PROXY', 'http://127.0.0.1:7890')
+cc.add_ev('ALL_PROXY', 'http://127.0.0.1:7890')
+cc.add_ev('http_proxy', 'http://127.0.0.1:7890')
+cc.add_ev('https_proxy', 'http://127.0.0.1:7890')
+cc.add_ev('all_proxy', 'http://127.0.0.1:7890')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Export profiles crossing platforms')
-    parser.add_argument('--ps', type=str, help='export powershell')
-    parser.add_argument('--bash', type=str, help='export bash')
+    parser.add_argument('--ps', type=str, help='export powershell', default='profile.ps1')
+    parser.add_argument('--bash', type=str, help='export bash', default='.profile')
     args = parser.parse_args()
     if ps := args.ps:
         with open(ps, 'w') as foo:
