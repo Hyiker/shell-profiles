@@ -11,22 +11,30 @@ jobs:
     steps:
       - name: Pull source
         uses: actions/checkout@v3
-      - name: Set outputs
+      - name: Get commit hash
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-      - uses: rickstaa/action-create-tag@v1
+      - name: Create Tag
+        uses: rickstaa/action-create-tag@v1
         with:
           tag: ${{ steps.vars.outputs.sha_short }}
           message: "${{ github.event.head_commit.message }}"
-      - uses: actions/setup-python@v4
+      - name: Setup python
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       - name: Compile
         run: python config.py --ps profile.ps1 --bash .profile
-      - name: Release
+      - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.vars.outputs.sha_short }}
           files: |
             profile.ps1
             .profile
+      - name: Clean releases
+        uses: dev-drprasad/delete-older-releases@v0.2.0
+        with:
+          keep_latest: 3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
