@@ -33,8 +33,9 @@ jobs:
             profile.ps1
             .profile
       - name: Clean releases
-        uses: dev-drprasad/delete-older-releases@v0.2.0
+        uses: Hyiker/delete-older-releases@v0.2.1
         with:
+          delete_tags: true
           keep_latest: 3
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
