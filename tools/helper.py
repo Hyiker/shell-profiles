@@ -1,5 +1,7 @@
 # coding: utf-8
+from __future__ import annotations
 from enum import Enum
+from typing import Collection
 
 
 class TargetPlat(Enum):
@@ -7,9 +9,9 @@ class TargetPlat(Enum):
     BASH = 2
 
 
-class Command:
-    def __init__(self, plats: list[TargetPlat] = [TargetPlat.POWERSHELL, TargetPlat.BASH]):
-        self.plats = plats
+class Exportable:
+    def __init__(self, plats: Collection = [TargetPlat.POWERSHELL, TargetPlat.BASH]):
+        self.plats = set(plats)
 
     def export_ps(self) -> str:
         pass
@@ -18,12 +20,11 @@ class Command:
         pass
 
 
-'''
-make an alias $name->$value
-'''
+class AliasCommand(Exportable):
+    '''
+    make an alias $name->$value
+    '''
 
-
-class AliasCommand(Command):
     def __init__(self, name: str, value: str, **kwargs):
         super().__init__(**kwargs)
         self.name = name
@@ -36,12 +37,11 @@ class AliasCommand(Command):
         return f'alias {self.name}="{self.value}"'
 
 
-'''
-export a environment variable $key->$value
-'''
+class EVCommand(Exportable):
+    '''
+    export a environment variable $key->$value
+    '''
 
-
-class EVCommand(Command):
     def __init__(self, key: str, value: str, **kwargs):
         super().__init__(**kwargs)
         self.key = key
@@ -54,7 +54,61 @@ class EVCommand(Command):
         return f'export {self.key}="{self.value}"'
 
 
-class CommandCollection(list):
+class CustomShellFunction(Exportable):
+    '''
+    export custom shell function 
+    '''
+
+    def __init__(self):
+        super().__init__(plats=[])
+
+    def set_ps_func(self, func: str):
+        self.ps_func = func
+        self.plats.add(TargetPlat.POWERSHELL)
+
+    def set_bash_func(self, func: str):
+        self.bash_func = func
+        self.plats.add(TargetPlat.BASH)
+
+    def export_ps(self) -> str:
+        return self.ps_func
+
+    def export_bash(self) -> str:
+        return self.bash_func
+
+
+class ShellFunctionProxy:
+    '''
+    proxy for shell function
+    '''
+
+    def __init__(self, exportable_collection: ExportableCollection):
+        self._csf = CustomShellFunction()
+        self._exportable_collection = exportable_collection
+
+    def add_ps_func(self, content: str) -> ShellFunctionProxy:
+        self._csf.set_ps_func(content)
+        return self
+
+    def add_bash_func(self, content: str) -> ShellFunctionProxy:
+        self._csf.set_bash_func(content)
+        return self
+
+    def add_ps_func_from_file(self, file: str) -> ShellFunctionProxy:
+        with open(file, 'r') as foo:
+            self.add_ps_func(foo.read())
+        return self
+
+    def add_bash_func_from_file(self, file: str) -> ShellFunctionProxy:
+        with open(file, 'r') as foo:
+            self.add_bash_func(foo.read())
+        return self
+
+    def build(self):
+        self._exportable_collection.append(self._csf)
+
+
+class ExportableCollection(list):
     def _filter_target(self, target: TargetPlat) -> str:
         return [cmd for cmd in self if target in cmd.plats]
 
@@ -63,6 +117,9 @@ class CommandCollection(list):
 
     def add_ev(self, *args, **kwargs):
         self.append(EVCommand(*args, **kwargs))
+
+    def build_custom_shell_func(self) -> ShellFunctionProxy:
+        return ShellFunctionProxy(self)
 
     def compile_ps(self) -> str:
         return ';\n'.join([cmd.export_ps() for cmd in self._filter_target(TargetPlat.POWERSHELL)])+';'

@@ -1,7 +1,7 @@
-from tools.helper import *
+from tools import ExportableCollection, TargetPlat
 import argparse
 
-cc = CommandCollection()
+cc = ExportableCollection()
 
 cc.add_alias('code', 'code-insiders')
 cc.add_alias('p', 'python')
@@ -18,6 +18,9 @@ cc.add_ev('ALL_PROXY', 'http://127.0.0.1:7890')
 cc.add_ev('http_proxy', 'http://127.0.0.1:7890')
 cc.add_ev('https_proxy', 'http://127.0.0.1:7890')
 cc.add_ev('all_proxy', 'http://127.0.0.1:7890')
+
+# powershell add environment variable
+cc.build_custom_shell_func().add_ps_func_from_file('custom/env.ps1').build()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Export profiles crossing platforms')
