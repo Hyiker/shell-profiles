@@ -6,6 +6,7 @@ Set-Alias -Name youtube-dl -Value "yt-dlp";
 Set-Alias -Name vim -Value "nvim";
 Set-Alias -Name vi -Value "nvim";
 Set-Alias -Name which -Value "get-command";
+Set-Alias -Name open -Value "explorer";
 $env:HTTP_PROXY="http://127.0.0.1:7890";
 $env:HTTPS_PROXY="http://127.0.0.1:7890";
 $env:ALL_PROXY="http://127.0.0.1:7890";

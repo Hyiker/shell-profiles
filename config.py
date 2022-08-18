@@ -11,6 +11,7 @@ cc.add_alias('youtube-dl', 'yt-dlp')
 cc.add_alias('vim', 'nvim')
 cc.add_alias('vi', 'nvim')
 cc.add_alias('which', 'get-command', plats=[TargetPlat.POWERSHELL])
+cc.add_alias('open', 'explorer', plats=[TargetPlat.POWERSHELL])
 
 cc.add_ev('HTTP_PROXY', 'http://127.0.0.1:7890')
 cc.add_ev('HTTPS_PROXY', 'http://127.0.0.1:7890')
